@@ -91,6 +91,24 @@ import diagram from '../../assets/diagram.webp';
 </figure>
 ```
 
+## Footnotes and sources
+
+Use standard Markdown footnote syntax — no plugin, no component. A caret-marker
+in the text[^gfm] and a matching definition anywhere in the file:
+
+```md
+A claim worth citing.[^source]
+
+[^source]: Jane Doe, [The Thing](https://example.com), 2025.
+```
+
+The marker renders as a superscript link, and all definitions are collected
+into an ordered list at the very bottom of the post with a back-link (↩) to
+where each was cited.[^multi] The label between the brackets is just an
+identifier — `[^source]`, `[^1]`, `[^why-postgres]` — it never appears; the
+rendered numbers are assigned in citation order. Definitions can hold links,
+`code`, and *emphasis* like any other Markdown.
+
 ## Quotes and rules
 
 > A blockquote for the occasional borrowed thought. It should read as an aside,
@@ -107,3 +125,9 @@ import diagram from '../../assets/diagram.webp';
 | Lighthouse    | ≥ 98      |
 
 That's everything the stylesheet needs to account for.
+
+[^gfm]: This is a GitHub-Flavored Markdown feature, enabled by default in
+    Astro's Markdown pipeline. Continuation lines in a definition are indented.
+
+[^multi]: A single footnote can be referenced more than once; each reference
+    gets its own back-link.

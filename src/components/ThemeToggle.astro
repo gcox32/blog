@@ -138,7 +138,11 @@
 				'(prefers-reduced-motion: reduce)',
 			).matches;
 			if (document.startViewTransition && !reduce) {
-				document.startViewTransition(() => apply(next));
+				document.documentElement.dataset.themeSwap = '';
+				const t = document.startViewTransition(() => apply(next));
+				t.finished.finally(() => {
+					delete document.documentElement.dataset.themeSwap;
+				});
 			} else {
 				apply(next);
 			}
