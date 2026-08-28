@@ -3,9 +3,6 @@
 A small, static blog. Astro → static HTML → Vercel. No database, no client
 framework, ~0 KB of JavaScript per page.
 
-The project's guiding document is [`ETHOS.md`](./ETHOS.md). Conventions for
-working in the repo are in [`AGENTS.md`](./AGENTS.md).
-
 ## Develop
 
 ```
