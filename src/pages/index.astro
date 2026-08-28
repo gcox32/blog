@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_TAGLINE } from '../consts';
+import { getPosts } from '../lib/posts';
+
+const posts = await getPosts();
+---
+
+<Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<p class="tagline">{SITE_TAGLINE}</p>
+
+	<ul class="posts stagger" role="list">
+		{
+			posts.map((post, i) => (
+				<li style={`--i:${i}`}>
+					<a href={`/posts/${post.id}/`}>
+						<span class="post-title">{post.data.title}</span>
+						<FormattedDate date={post.data.pubDate} />
+						<span class="post-desc">{post.data.description}</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+
+	{posts.length === 0 && <p class="tagline">Nothing published yet.</p>}
+</Base>
+
+<style>
+	.tagline {
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		margin: 0 0 2.5rem;
+	}
+
+	.posts {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.posts li + li {
+		margin-top: 0.4rem;
+	}
+
+	.posts a {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.15rem 1rem;
+		padding: 0.9rem;
+		margin-inline: -0.9rem;
+		border-radius: var(--radius);
+		text-decoration: none;
+		color: inherit;
+		transition: background-color 0.18s var(--ease);
+	}
+
+	.posts a:hover {
+		background: color-mix(in oklab, var(--accent) 7%, transparent);
+	}
+
+	.post-title {
+		font-weight: 600;
+		color: var(--text);
+		transition: color 0.18s var(--ease);
+	}
+
+	.posts a:hover .post-title {
+		color: var(--accent);
+	}
+
+	.posts time {
+		color: var(--text-muted);
+		font-size: 0.9rem;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	.post-desc {
+		grid-column: 1 / -1;
+		color: var(--text-muted);
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 34rem) {
+		.posts a {
+			grid-template-columns: 1fr;
+		}
+		.posts time {
+			order: -1;
+		}
+	}
+</style>

@@ -1,0 +1,299 @@
+/*
+  Grant Cox — blog.grantcox.net
+  One small stylesheet. Tokens first, then base, then the few flourishes.
+  Every animated thing here is gated behind prefers-reduced-motion.
+*/
+
+/* ---------- Tokens ---------- */
+
+:root {
+	color-scheme: light;
+
+	--bg: #fdfdfb;
+	--surface: #ffffff;
+	--text: #1c1b18;
+	--text-muted: #6c6a63;
+	--border: #e7e5df;
+	--accent: #b1502f;
+	--accent-hover: #964022;
+	--selection: #b1502f26;
+
+	/* Shiki (theme: css-variables) */
+	--astro-code-foreground: #2f2c28;
+	--astro-code-background: #f6f4ef;
+	--astro-code-token-comment: #9a968c;
+	--astro-code-token-keyword: #a3402a;
+	--astro-code-token-string: #4c6b3c;
+	--astro-code-token-string-expression: #4c6b3c;
+	--astro-code-token-constant: #7a5b1e;
+	--astro-code-token-function: #38618c;
+	--astro-code-token-parameter: #2f2c28;
+	--astro-code-token-punctuation: #86827a;
+	--astro-code-token-link: #a3402a;
+
+	--measure: 75ch;
+	--space: clamp(1rem, 0.6rem + 1.6vw, 1.6rem);
+	--radius: 10px;
+	--font-body:
+		ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+		Arial, sans-serif;
+	--font-mono:
+		ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas,
+		monospace;
+	--ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		color-scheme: dark;
+
+		--bg: #171613;
+		--surface: #201e1a;
+		--text: #ece9e2;
+		--text-muted: #a3a099;
+		--border: #302d28;
+		--accent: #e2895f;
+		--accent-hover: #f0a37f;
+		--selection: #e2895f26;
+
+		--astro-code-foreground: #d8d4cc;
+		--astro-code-background: #1d1b17;
+		--astro-code-token-comment: #726e65;
+		--astro-code-token-keyword: #e59178;
+		--astro-code-token-string: #a3c58a;
+		--astro-code-token-string-expression: #a3c58a;
+		--astro-code-token-constant: #d9b878;
+		--astro-code-token-function: #86b3e0;
+		--astro-code-token-parameter: #d8d4cc;
+		--astro-code-token-punctuation: #8a867d;
+		--astro-code-token-link: #e59178;
+	}
+}
+
+/* Explicit choice always wins over the system preference. */
+:root[data-theme="dark"] {
+	color-scheme: dark;
+
+	--bg: #171613;
+	--surface: #201e1a;
+	--text: #ece9e2;
+	--text-muted: #a3a099;
+	--border: #302d28;
+	--accent: #e2895f;
+	--accent-hover: #f0a37f;
+	--selection: #e2895f26;
+
+	--astro-code-foreground: #d8d4cc;
+	--astro-code-background: #1d1b17;
+	--astro-code-token-comment: #726e65;
+	--astro-code-token-keyword: #e59178;
+	--astro-code-token-string: #a3c58a;
+	--astro-code-token-string-expression: #a3c58a;
+	--astro-code-token-constant: #d9b878;
+	--astro-code-token-function: #86b3e0;
+	--astro-code-token-parameter: #d8d4cc;
+	--astro-code-token-punctuation: #8a867d;
+	--astro-code-token-link: #e59178;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: var(--font-body);
+	line-height: 1.65;
+	-webkit-text-size-adjust: 100%;
+	scrollbar-gutter: stable;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-size: 1.05rem;
+	display: flex;
+	flex-direction: column;
+	min-height: 100dvh;
+	transition:
+		background-color 0.3s var(--ease),
+		color 0.3s var(--ease);
+}
+
+::selection {
+	background: var(--selection);
+}
+
+:where(a) {
+	color: var(--accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 3px;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid var(--border);
+	margin: 2.5rem 0;
+}
+
+main {
+	flex: 1;
+	width: 100%;
+	max-width: var(--measure);
+	margin-inline: auto;
+	padding: clamp(2rem, 5vw, 4rem) var(--space);
+}
+
+h1,
+h2,
+h3,
+h4 {
+	line-height: 1.2;
+	letter-spacing: -0.014em;
+	font-weight: 650;
+}
+
+/* ---------- Animated underline (links in flowing text) ---------- */
+
+.link,
+.prose p a,
+.prose li a {
+	color: var(--accent);
+	text-decoration: none;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-position: 0 100%;
+	background-repeat: no-repeat;
+	background-size: 100% 1px;
+	transition: background-size 0.25s var(--ease);
+}
+
+.link:hover,
+.prose p a:hover,
+.prose li a:hover {
+	background-size: 0% 1px;
+	background-position: 100% 100%;
+}
+
+/* ---------- Prose ---------- */
+
+.prose {
+	font-size: 1.075rem;
+}
+
+.prose > * + * {
+	margin-top: 1.25em;
+}
+
+.prose h2 {
+	margin-top: 2em;
+	font-size: 1.4rem;
+}
+
+.prose h3 {
+	margin-top: 1.6em;
+	font-size: 1.15rem;
+}
+
+.prose :where(code):not(pre code) {
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+	padding: 0.15em 0.36em;
+	border-radius: 5px;
+	background: color-mix(in oklab, var(--text) 8%, transparent);
+}
+
+.prose pre {
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+	line-height: 1.6;
+	padding: 1rem 1.15rem;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	overflow-x: auto;
+}
+
+.prose blockquote {
+	margin-inline: 0;
+	padding-left: 1.1rem;
+	border-left: 2px solid var(--accent);
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.prose :where(ul, ol) {
+	padding-left: 1.4rem;
+}
+
+.prose li + li {
+	margin-top: 0.4em;
+}
+
+.prose img {
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+}
+
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+}
+
+.prose :where(th, td) {
+	border: 1px solid var(--border);
+	padding: 0.5rem 0.7rem;
+	text-align: left;
+}
+
+/* ---------- Motion / view transitions ---------- */
+
+@view-transition {
+	navigation: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root) {
+		animation: fade-out 0.18s var(--ease) both;
+	}
+	::view-transition-new(root) {
+		animation: fade-up 0.28s var(--ease) both;
+	}
+
+	.stagger > * {
+		animation: fade-up 0.4s var(--ease) both;
+		animation-delay: calc(var(--i, 0) * 55ms);
+	}
+}
+
+@keyframes fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+}
+
+@keyframes fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+/* The header is shared across pages — let it stay put during transitions. */
+.site-header {
+	view-transition-name: site-header;
+}

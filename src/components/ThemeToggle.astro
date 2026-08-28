@@ -1,0 +1,147 @@
+---
+// A single <button>. ~15 lines of inline JS, no framework, no hydration.
+---
+
+<button
+	id="theme-toggle"
+	type="button"
+	class="theme-toggle"
+	aria-label="Toggle color theme"
+	title="Toggle color theme"
+>
+	<svg class="icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+		<circle class="sun-core" cx="12" cy="12" r="4" />
+		<g class="sun-rays" stroke-linecap="round">
+			<line x1="12" y1="2" x2="12" y2="4" />
+			<line x1="12" y1="20" x2="12" y2="22" />
+			<line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+			<line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+			<line x1="2" y1="12" x2="4" y2="12" />
+			<line x1="20" y1="12" x2="22" y2="12" />
+			<line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+			<line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+		</g>
+		<path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5Z" />
+	</svg>
+</button>
+
+<style>
+	.theme-toggle {
+		position: fixed;
+		right: 1rem;
+		top: 1rem;
+		display: inline-grid;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		background: var(--surface);
+		color: var(--text-muted);
+		cursor: pointer;
+		transition:
+			color 0.2s var(--ease),
+			border-color 0.2s var(--ease),
+			transform 0.2s var(--ease);
+	}
+
+	.theme-toggle:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	.theme-toggle:active {
+		transform: scale(0.92);
+	}
+
+	.icon {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		overflow: visible;
+	}
+
+	.sun-core,
+	.sun-rays,
+	.moon {
+		transition:
+			opacity 0.25s var(--ease),
+			transform 0.35s var(--ease);
+		transform-origin: center;
+	}
+
+	/* Default (light): show the sun, hide the moon. */
+	.moon {
+		opacity: 0;
+		transform: rotate(-40deg) scale(0.6);
+	}
+
+	/* Dark chosen explicitly. */
+	:global(html[data-theme='dark']) .sun-core,
+	:global(html[data-theme='dark']) .sun-rays {
+		opacity: 0;
+		transform: rotate(45deg) scale(0.4);
+	}
+	:global(html[data-theme='dark']) .moon {
+		opacity: 1;
+		transform: rotate(0) scale(1);
+	}
+
+	/* Dark inherited from the system (no explicit choice yet). */
+	@media (prefers-color-scheme: dark) {
+		:global(html:not([data-theme='light'])) .sun-core,
+		:global(html:not([data-theme='light'])) .sun-rays {
+			opacity: 0;
+			transform: rotate(45deg) scale(0.4);
+		}
+		:global(html:not([data-theme='light'])) .moon {
+			opacity: 1;
+			transform: rotate(0) scale(1);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sun-core,
+		.sun-rays,
+		.moon,
+		.theme-toggle {
+			transition: none;
+		}
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		const btn = document.getElementById('theme-toggle');
+		if (!btn) return;
+
+		const systemDark = () =>
+			window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const current = () =>
+			document.documentElement.dataset.theme ||
+			(systemDark() ? 'dark' : 'light');
+
+		const apply = (theme) => {
+			document.documentElement.dataset.theme = theme;
+			try {
+				localStorage.setItem('theme', theme);
+			} catch (e) {}
+			btn.setAttribute('aria-pressed', String(theme === 'dark'));
+		};
+
+		btn.setAttribute('aria-pressed', String(current() === 'dark'));
+
+		btn.addEventListener('click', () => {
+			const next = current() === 'dark' ? 'light' : 'dark';
+			const reduce = window.matchMedia(
+				'(prefers-reduced-motion: reduce)',
+			).matches;
+			if (document.startViewTransition && !reduce) {
+				document.startViewTransition(() => apply(next));
+			} else {
+				apply(next);
+			}
+		});
+	})();
+</script>

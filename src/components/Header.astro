@@ -1,0 +1,71 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const nav = [
+	{ href: '/', label: 'Writing' },
+	{ href: '/about', label: 'About' },
+];
+---
+
+<header class="site-header">
+	<nav>
+		{
+			nav.map((item) => (
+				<a
+					href={item.href}
+					aria-current={path === item.href ? 'page' : undefined}
+				>
+					{item.label}
+				</a>
+			))
+		}
+		<ThemeToggle />
+	</nav>
+</header>
+
+<style>
+	.site-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		max-width: var(--measure);
+		margin-inline: auto;
+		padding: 1.1rem var(--space);
+		border-bottom: 1px solid var(--border);
+	}
+
+	nav {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	nav a {
+		color: var(--text-muted);
+		text-decoration: none;
+		font-size: 0.95rem;
+		position: relative;
+		transition: color 0.18s var(--ease);
+	}
+
+	nav a:hover {
+		color: var(--text);
+	}
+
+	nav a[aria-current='page'] {
+		color: var(--text);
+	}
+
+	nav a[aria-current='page']::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -0.35rem;
+		height: 2px;
+		background: var(--accent);
+		border-radius: 2px;
+	}
+</style>

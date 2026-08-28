@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<Base
+	title={`About — ${SITE_TITLE}`}
+	description="Who writes here and why."
+>
+	<article class="prose">
+		<h1>About</h1>
+		<p>
+			I'm Grant. I build software and play basketball and enjoy stories. Hopefully
+			I will write about all of those here.
+		</p>
+		<p>
+			This site is deliberately small: static pages, no tracking beyond
+			aggregate visit counts, a quick build.
+			The <a class="link" href="/rss.xml">feed</a> is the best way to follow along.
+		</p>
+		<p>
+			Reach me at <a class="link" href="mailto:hello@grantcox.net"
+				>hello@grantcox.net</a
+			>.
+		</p>
+	</article>
+</Base>

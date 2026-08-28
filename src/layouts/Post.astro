@@ -1,0 +1,119 @@
+---
+import Base from './Base.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { Image, getImage } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { readingMinutes } from '../lib/posts';
+
+interface Props {
+	post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroAlt, ogImage } =
+	post.data;
+const minutes = readingMinutes(post.body);
+
+// Social image: an explicit ogImage wins; otherwise derive a 1200×630 JPEG
+// crop from the hero; otherwise the layout falls back to the site default.
+let social: string | undefined = ogImage;
+if (!social && heroImage) {
+	const derived = await getImage({
+		src: heroImage,
+		width: 1200,
+		height: 630,
+		format: 'jpeg',
+		fit: 'cover',
+		position: 'attention',
+	});
+	social = derived.src;
+}
+---
+
+<Base
+	title={title}
+	description={description}
+	ogImage={social}
+	type="article"
+>
+	<article class="prose">
+		{
+			heroImage && (
+				<Image
+					class="hero"
+					src={heroImage}
+					alt={heroAlt ?? ''}
+					widths={[480, 800, 1200]}
+					sizes="(min-width: 75ch) 75ch, 100vw"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			)
+		}
+
+		<header class="post-header">
+			<h1>{title}</h1>
+			<p class="meta">
+				<FormattedDate date={pubDate} />
+				<span aria-hidden="true">·</span>
+				<span>{minutes} min read</span>
+				{
+					updatedDate && (
+						<>
+							<span aria-hidden="true">·</span>
+							<span>
+								updated <FormattedDate date={updatedDate} />
+							</span>
+						</>
+					)
+				}
+			</p>
+		</header>
+
+		<slot />
+
+		<footer class="post-footer">
+			<a class="link" href="/">← All writing</a>
+		</footer>
+	</article>
+</Base>
+
+<style>
+	.hero {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius);
+		border: 1px solid var(--border);
+	}
+
+	.post-header {
+		margin-bottom: 2.5rem;
+	}
+
+	.post-header h1 {
+		font-size: clamp(1.8rem, 1.2rem + 2.4vw, 2.4rem);
+		margin: 0 0 0.6rem;
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 0;
+		color: var(--text-muted);
+		font-size: 0.92rem;
+	}
+
+	.meta :global(time) {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.post-footer {
+		margin-top: 3.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+		font-size: 0.95rem;
+	}
+</style>
