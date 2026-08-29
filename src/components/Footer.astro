@@ -6,7 +6,13 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
 	<span>&copy; {year} {SITE_AUTHOR}</span>
 	<div class="social">
-		<a class="link" href="/rss.xml">RSS</a>
+		<a class="icon-link" href="/rss.xml" aria-label="RSS feed">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+				<circle cx="4.5" cy="19.5" r="2.25" />
+				<path d="M2.25 10.5a11.25 11.25 0 0 1 11.25 11.25h3A14.25 14.25 0 0 0 2.25 7.5v3Z" />
+				<path d="M2.25 3.75A18 18 0 0 1 20.25 21.75h3A21 21 0 0 0 2.25 .75v3Z" />
+			</svg>
+		</a>
 		<a
 			class="icon-link"
 			href={SOCIAL.github}
